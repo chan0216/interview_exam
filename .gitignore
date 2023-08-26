@@ -144,3 +144,5 @@ process.log
 
 private/
 .DS_Store
+.vscode
+.pytest_cache

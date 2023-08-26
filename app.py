@@ -1,7 +1,7 @@
-
+import json
+import re
 from flask import Flask, request, jsonify
 from utils import convert_amount, get_exchange_rate, calculate_amount
-import json
 
 
 app = Flask(__name__)
@@ -19,14 +19,15 @@ def exchange_currency():
     if not (source and target and amount_str):
         return jsonify({"msg": "error", "description": "Missing required parameters"}), 400
 
-    try:
-        amount = convert_amount(amount_str)
-    except:
+    if not re.match(r"^\$\d{1,3}(,\d{3})*(\.\d+)?$", amount_str):
         return jsonify({"msg": "error", "description": "Invalid amount format"}), 400
 
-    rate = get_exchange_rate(source, target, exchange_rates)
-    if rate is None:
+    amount = convert_amount(amount_str)
+
+    if source not in exchange_rates or target not in exchange_rates[source]:
         return jsonify({"msg": "error", "description": "Unsupported currency"}), 400
+
+    rate = get_exchange_rate(source, target, exchange_rates)
 
     converted_amount = calculate_amount(amount, rate)
     formatted_amount = f"${converted_amount:,}"
@@ -34,4 +35,5 @@ def exchange_currency():
     return {"msg": "success", "amount": formatted_amount}
 
 
-app.run(port=3000, debug=True)
+if __name__ == '__main__':
+    app.run(port=3000, debug=True)

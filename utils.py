@@ -7,8 +7,6 @@ def convert_amount(amount_str):
 
 
 def get_exchange_rate(source, target, exchange_rates):
-    if source not in exchange_rates or target not in exchange_rates[source]:
-        return None
     return Decimal(str(exchange_rates[source][target]))
 
 
