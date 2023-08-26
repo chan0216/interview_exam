@@ -10,7 +10,7 @@ with open('exchange_rates.json', 'r') as file:
     exchange_rates = json.load(file)
 
 
-@app.route('/')
+@app.route('/exchange')
 def exchange_currency():
     source = request.args.get('source')
     target = request.args.get('target')

@@ -13,7 +13,7 @@ def client():
 
 # Test for valid currency conversion
 def test_valid_exchange(client):
-    response = client.get('/?source=USD&target=JPY&amount=$1,525')
+    response = client.get('/exchange?source=USD&target=JPY&amount=$1,525')
     data = json.loads(response.data)
     assert response.status_code == 200
     assert data['msg'] == 'success'
@@ -22,7 +22,7 @@ def test_valid_exchange(client):
 
 # Test when a required parameter is missing
 def test_missing_parameters(client):
-    response = client.get('/?source=USD&amount=$1,525')
+    response = client.get('/exchange?source=USD&amount=$1,525')
     data = json.loads(response.data)
     assert response.status_code == 400
     assert data['msg'] == 'error'
@@ -31,7 +31,7 @@ def test_missing_parameters(client):
 
 # Test when no parameters are provided
 def test_no_parameters(client):
-    response = client.get('/')
+    response = client.get('/exchange')
     data = json.loads(response.data)
     assert response.status_code == 400
     assert data['msg'] == 'error'
@@ -40,7 +40,7 @@ def test_no_parameters(client):
 
 # Test for incorrect amount format
 def test_invalid_amount(client):
-    response = client.get('/?source=USD&target=JPY&amount=$abc')
+    response = client.get('/exchange?source=USD&target=JPY&amount=$abc')
     data = json.loads(response.data)
     assert response.status_code == 400
     assert data['msg'] == 'error'
@@ -49,7 +49,7 @@ def test_invalid_amount(client):
 
 # Test for incorrect amount format without thousand separators
 def test_invalid_amount_no_separator(client):
-    response = client.get('/?source=USD&target=JPY&amount=$1525')
+    response = client.get('/exchange?source=USD&target=JPY&amount=$1525')
     data = json.loads(response.data)
     assert response.status_code == 400
     assert data['msg'] == 'error'
@@ -58,7 +58,7 @@ def test_invalid_amount_no_separator(client):
 
 # Test for unsupported currency conversion
 def test_unsupported_currency(client):
-    response = client.get('/?source=JPY&target=EUR&amount=$1,525')
+    response = client.get('/exchange?source=JPY&target=EUR&amount=$1,525')
     data = json.loads(response.data)
     assert response.status_code == 400
     assert data['msg'] == 'error'
